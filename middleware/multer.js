@@ -1,5 +1,10 @@
-MONGODB_URI = "mongodb+srv://abhinandssd90_db_user:RVITcets6CRWoq1Z@cluster0.sapid8e.mongodb.net"
-CLOUDNARY_API_KEY = "456763835668165"
-CLOUDNARY_SECRET_KEY = "weoXxkzK306JzwICtVL-vN-Vh2k"
-CLOUDNARY_NAME = "dakcigd9d"
-JWT_SECRET = "lakshay"
+import multer from "multer"
+
+const storage = multer.diskStorage({
+    filename: function(req,file,callback){
+        callback(null,file.originalname)
+    }
+})
+
+const upload = multer({storage})
+export default upload;
