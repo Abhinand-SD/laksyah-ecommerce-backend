@@ -7,7 +7,17 @@ const addProduct = async (req,res) =>{
     try {
         
         const {name, description, price, category, subCategory, sizes, bestseller} = req.body
+
+         console.log("Individual fields:");
+        console.log("name:", name, "type:", typeof name);
+        console.log("description:", description, "type:", typeof description);
+        console.log("price:", price, "type:", typeof price);
+        console.log("category:", category, "type:", typeof category);
+        console.log("subCategory:", subCategory, "type:", typeof subCategory);
+        console.log("sizes:", sizes, "type:", typeof sizes);
+        console.log("bestseller:", bestseller, "type:", typeof bestseller);
         
+
         const image1 = req.files.image1 && req.files.image1[0]
         const image2 = req.files.image2 && req.files.image2[0]
         const image3 = req.files.image3 && req.files.image3[0]
