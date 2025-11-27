@@ -26,7 +26,6 @@ const loginUser = async (req, res) => {
         if (isMatch) {
             const token = createToken(user._id)
             res.json({ success: true, token })
-            console.log('kjnjsdnf')
         }
         else {
             res.json({ success: false, message: "invalid credentials" })
@@ -90,7 +89,6 @@ const registerUser = async (req, res) => {
 const adminLogin = async (req, res) => {
 
     try {
-
         const { email, password } = req.body;
 
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
