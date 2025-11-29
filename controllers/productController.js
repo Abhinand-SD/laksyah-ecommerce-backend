@@ -5,10 +5,9 @@ import productModel from "../models/productModel.js"
 const addProduct = async (req,res) =>{
 
     try {
-        
         const {name, description, price, category, subCategory, sizes, bestseller} = req.body
 
-         console.log("Individual fields:");
+        console.log("Individual fields:");
         console.log("name:", name, "type:", typeof name);
         console.log("description:", description, "type:", typeof description);
         console.log("price:", price, "type:", typeof price);
@@ -17,13 +16,10 @@ const addProduct = async (req,res) =>{
         console.log("sizes:", sizes, "type:", typeof sizes);
         console.log("bestseller:", bestseller, "type:", typeof bestseller);
         
-
         const image1 = req.files.image1 && req.files.image1[0]
         const image2 = req.files.image2 && req.files.image2[0]
         const image3 = req.files.image3 && req.files.image3[0]
         const image4 = req.files.image4 && req.files.image4[0]
-
-        console.log(name, description, price, category, subCategory, sizes, bestseller)
 
         const images = [image1, image2, image3, image4].filter((item) => item !== undefined)
 
@@ -51,12 +47,9 @@ const addProduct = async (req,res) =>{
 
         res.json({success: true, message:"Product Added"})
 
-        
     } catch (err) {
-        res.json({success:false, message:err.message})
-        
+        res.json({success:false, message:err.message})  
     }
- 
 }
 
 // function for list product
@@ -68,7 +61,6 @@ const listProducts = async (req,res) => {
     } catch (err) {
         res.json({success: false, message:err.message})
     }
-
 }
 
 //function for removing product
@@ -81,11 +73,11 @@ const removeProduct = async (req,res) =>{
         console.log(err)
         res.json({success: false, message: err.message})
     }
-
 }
 
 //function for single product info
 const singleProduct = async (req,res) => {
+
     try{
     const { productId } = req.body;
 
