@@ -1,4 +1,5 @@
-import orderModel from "../models/orderModel.js";
+import orderModel from "../models/orderModel.js"
+import userModel from "../models/userModel.js"
 
 // Placing order using COD Nethod
 const placeOrder= async (req,res) => {
@@ -21,7 +22,7 @@ const placeOrder= async (req,res) => {
 
         await userModel.findByIdAndUpdate(userId,{cartData:{}})
 
-        res.json({success, message:"Order Placed"})
+        res.json({success: true, message:"Order Placed"})
     }catch(err){
         console.log(err)
         res.json({success:false, message:err.message})
@@ -45,7 +46,18 @@ const allOrders = async (req,res) => {
 
 //User order data for Frontend
 const  userOrders = async (req,res) => {
-
+    try {
+        const {userId} = req.body;
+        console.log("sdnfj");
+        
+        const orders = await orderModel.find({userId})
+        console.log(orders);
+        
+        res.json({success:true, orders})
+    } catch (err) {
+        console.log(err)
+        res.json({success: false, message: err.message})
+    }
 }
 
 //update order status from admin panel
