@@ -42,7 +42,7 @@ const updateCart = async(req,res) => {
         await userModel.findByIdAndUpdate(userId, {cartData})
         res.json({ success: true, message: "Cart updated"})
 
-    } catch (error) {
+    } catch (err) {
         console.log(err)
         res.json({ success: false, message: err.message})
     }
@@ -57,7 +57,7 @@ const getUserCart = async(req,res) => {
         let cartData = await userData.cartData;
 
         res.json({success: true, cartData})
-    } catch (error) {
+    } catch (err) {
         console.log(err)
         res.json({ success: false, message: err.message})
     }
