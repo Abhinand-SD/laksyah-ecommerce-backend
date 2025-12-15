@@ -1,5 +1,9 @@
 import orderModel from "../models/orderModel.js"
 import userModel from "../models/userModel.js"
+import Stripe from "stripe"
+
+// gateway initialize
+const stripe = new Stripe(process.env.STRIPE_KEY)
 
 // Placing order using COD Nethod
 const placeOrder= async (req,res) => {
@@ -31,6 +35,38 @@ const placeOrder= async (req,res) => {
 
 // Place orders using stripe method
 const placeholderStrip = async (req,res) => {
+
+    try {
+        const {userId, items, amount, address} = req.body;
+
+        const {origin} = req.headers;
+
+         const orderData = {
+            userId,
+            items,
+            address,
+            amount,
+            paymentMethod: "Stripe",
+            payment: false,
+            date: Date.now()
+        }
+
+        const newOrder = new orderModel(orderData)
+        await newOrder.save()
+
+        const line_item = items.map((item) => {
+            price_data : {
+                currency: currency,
+                product_data: {
+                    name: item.name
+                },
+                unit_amount: item.price * 100
+            }
+        })
+    
+    } catch (error) {
+        
+    }
 
 }
 
