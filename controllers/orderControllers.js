@@ -2,6 +2,10 @@ import orderModel from "../models/orderModel.js"
 import userModel from "../models/userModel.js"
 import Stripe from "stripe"
 
+// global veriables
+const currency = 'inr'
+const deliveryCharge = 10
+
 // gateway initialize
 const stripe = new Stripe(process.env.STRIPE_KEY)
 
@@ -54,18 +58,33 @@ const placeholderStrip = async (req,res) => {
         const newOrder = new orderModel(orderData)
         await newOrder.save()
 
-        const line_item = items.map((item) => {
+        const line_items = items.map((item) => ({
             price_data : {
                 currency: currency,
                 product_data: {
                     name: item.name
                 },
                 unit_amount: item.price * 100
-            }
+            },
+            quantity : item.quantity
+        }))
+
+        line_items.push({
+            price_data : {
+                currency: currency,
+                product_data: {
+                    name: 'Delivery Charge'
+                },
+                unit_amount: deliveryCharge * 100
+            },
+            quantity : 1
         })
     
     } catch (error) {
         
+        const session = await stripe.checkout.session.create({
+            success_urrl: ``
+        })
     }
 
 }
