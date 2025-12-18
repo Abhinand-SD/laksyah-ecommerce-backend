@@ -79,12 +79,21 @@ const placeholderStrip = async (req,res) => {
             },
             quantity : 1
         })
-    
-    } catch (error) {
-        
-        const session = await stripe.checkout.session.create({
-            success_urrl: ``
+
+                const session = await stripe.checkout.session.create({
+            success_urrl: `${origin}/verify?success=true&orderId=${newOrder._id}`,
+            cancel_url: `${origin}/verify?success=false&orderId=${newOrder._id}`,
+            line_items,
+            mode: 'payment',
+
         })
+
+        res.json({success: true, session_url: session.url});
+    
+    } catch (err) {
+        
+        console.log(err)
+        res.json({success: false, message:err.message})
     }
 
 }
