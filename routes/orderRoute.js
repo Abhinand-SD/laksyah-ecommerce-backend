@@ -1,8 +1,7 @@
 import express from 'express'
-import { allOrders, placeholderStrip, placeOrder, placeOrderRazerpay, updateStatus, userOrders } from '../controllers/orderControllers.js'
+import { allOrders, placeholderStripe, placeOrder, placeOrderRazerpay, updateStatus, userOrders, verifyStripePayment } from '../controllers/orderControllers.js'
 import adminAuth from '../middleware/adminAuth.js'
 import authUser from '../middleware/auth.js'
-
 
 
 const orderRouter = express.Router()
@@ -14,10 +13,13 @@ orderRouter.post('/status', adminAuth, updateStatus)
 
 //Payment Features
 orderRouter.post('/place', authUser, placeOrder)
-orderRouter.post('/stripe', authUser, placeholderStrip)
+orderRouter.post('/stripe', authUser, placeholderStripe)
 orderRouter.post('/razorpay', authUser, placeOrderRazerpay)
 
 // User Feature
 orderRouter.post('/userOrders', authUser, userOrders)
+
+// verify stripe payment
+orderRouter.post('/verifyStripe', authUser, verifyStripePayment)
 
 export default orderRouter

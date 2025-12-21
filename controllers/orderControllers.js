@@ -4,10 +4,10 @@ import Stripe from "stripe"
 
 // global veriables
 const currency = 'inr'
-const deliveryCharge = 10
+const deliveryCharge = 75
 
 // gateway initialize
-const stripe = new Stripe(process.env.STRIPE_KEY)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 // Placing order using COD Nethod
 const placeOrder= async (req,res) => {
@@ -38,7 +38,7 @@ const placeOrder= async (req,res) => {
 }
 
 // Place orders using stripe method
-const placeholderStrip = async (req,res) => {
+const placeholderStripe = async (req,res) => {
 
     try {
         const {userId, items, amount, address} = req.body;
@@ -54,10 +54,11 @@ const placeholderStrip = async (req,res) => {
             payment: false,
             date: Date.now()
         }
-
+        
         const newOrder = new orderModel(orderData)
         await newOrder.save()
-
+        
+        // Items
         const line_items = items.map((item) => ({
             price_data : {
                 currency: currency,
@@ -68,7 +69,8 @@ const placeholderStrip = async (req,res) => {
             },
             quantity : item.quantity
         }))
-
+        
+        // Delivery Charge
         line_items.push({
             price_data : {
                 currency: currency,
@@ -80,12 +82,15 @@ const placeholderStrip = async (req,res) => {
             quantity : 1
         })
 
-                const session = await stripe.checkout.session.create({
-            success_urrl: `${origin}/verify?success=true&orderId=${newOrder._id}`,
+            const session = await stripe.checkout.sessions.create({
+            success_url: `${origin}/verify?success=true&orderId=${newOrder._id}`,
             cancel_url: `${origin}/verify?success=false&orderId=${newOrder._id}`,
             line_items,
             mode: 'payment',
-
+            metadata: {
+                userId: userId.toString(),
+                orderId: newOrder._id.toString()
+            } 
         })
 
         res.json({success: true, session_url: session.url});
@@ -96,6 +101,27 @@ const placeholderStrip = async (req,res) => {
         res.json({success: false, message:err.message})
     }
 
+}
+
+// verify payment
+const verifyStripePayment = async(req,res) => {
+
+    const {orderId, success, userId} = req.body;
+    try {
+        if(success == "true") {
+            
+            await orderModel.findByIdAndUpdate(orderId,{payment:true})
+            await userModel.findByIdAndUpdate(userId,{cartData: {}})
+            res.json({success: true});
+        }else{
+            await orderModel.findByIdAndDelete(orderId)
+            res.json({success: false});
+        }
+    
+    } catch (error) {
+        console.log(error)
+        res.json({success: false, message: error.message})
+    }
 }
 
 // Placing orders using Razorpay method
@@ -148,9 +174,10 @@ const updateStatus = async (req, res) => {
 
 export {
     placeOrder,
-    placeholderStrip,
+    placeholderStripe,
     placeOrderRazerpay,
     allOrders,
     userOrders,
-    updateStatus
+    updateStatus,
+    verifyStripePayment
 }
