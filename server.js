@@ -22,6 +22,8 @@ app.use(cors({
   origin: [
     "http://localhost:5173",
     "http://localhost:5174",
+    "https://laksyah-trends-ecommerce.vercel.app",
+    "https://laksyah-trends-admin.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization", "token"],
